@@ -1,0 +1,113 @@
+.newsletter {
+  position: relative;
+  padding: 80px 20px;
+  background-image: url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.newsletter-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 30, 15, 0.75) 0%,
+    rgba(26, 58, 40, 0.80) 100%
+  );
+  z-index: 1;
+}
+
+.newsletter-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 650px;
+  width: 100%;
+}
+
+.newsletter-title {
+  color: var(--white);
+  font-size: 42px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  line-height: 1.2;
+  font-style: italic;
+}
+
+.newsletter-desc {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  font-style: italic;
+  margin-bottom: 30px;
+}
+
+.newsletter-form {
+  display: flex;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-family: var(--font-family);
+  color: var(--text-dark);
+  background: var(--white);
+}
+
+.newsletter-input::placeholder {
+  color: #999;
+}
+
+.newsletter-btn {
+  padding: 16px 35px;
+  background: var(--green);
+  color: var(--white);
+  border: none;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-family);
+  cursor: pointer;
+  transition: background 0.3s ease;
+  white-space: nowrap;
+}
+
+.newsletter-btn:hover {
+  background: var(--green-dark);
+}
+
+.newsletter-success {
+  color: var(--gold-light);
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+@media (max-width: 600px) {
+  .newsletter {
+    padding: 50px 15px;
+  }
+  .newsletter-title {
+    font-size: 28px;
+  }
+  .newsletter-form {
+    flex-direction: column;
+  }
+  .newsletter-btn {
+    padding: 14px;
+  }
+}

@@ -1,0 +1,198 @@
+.markets {
+  padding: 80px 20px;
+  background: var(--off-white);
+}
+
+.markets-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── Top Row: Intro + Coverage Table ── */
+.markets-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+  margin-bottom: 60px;
+}
+
+.markets-tag {
+  display: block;
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.markets-title {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.1;
+  margin-bottom: 20px;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.markets-line {
+  width: 50px;
+  height: 4px;
+  background: var(--gold);
+  margin-bottom: 25px;
+}
+
+.markets-desc {
+  font-size: 16px;
+  color: var(--text-medium);
+  line-height: 1.8;
+}
+
+/* ── Coverage Table ── */
+.markets-coverage {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.06);
+  border-top: 4px solid var(--gold);
+}
+
+.coverage-heading {
+  color: var(--gold-dark);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.coverage-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.coverage-row:last-child {
+  border-bottom: none;
+}
+
+.coverage-region {
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.coverage-countries {
+  color: var(--text-dark);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.coverage-highlight {
+  color: var(--gold-dark);
+}
+
+/* ── Country Cards Grid ── */
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 25px;
+}
+
+.country-card {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eee;
+  transition: all 0.3s ease;
+}
+
+.country-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border-color: var(--gold);
+}
+
+.country-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.country-flag {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.country-name {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-dark);
+  line-height: 1.2;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.country-role {
+  display: block;
+  color: var(--gold-dark);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.country-desc {
+  font-size: 14px;
+  color: var(--text-medium);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+.country-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.country-tag {
+  display: inline-block;
+  padding: 5px 14px;
+  background: var(--off-white);
+  color: var(--text-dark);
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 20px;
+  border: 1px solid #e0e0e0;
+}
+
+@media (max-width: 980px) {
+  .markets-top {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .markets-title {
+    font-size: 36px;
+  }
+  .country-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .markets {
+    padding: 50px 15px;
+  }
+  .markets-title {
+    font-size: 30px;
+  }
+  .country-grid {
+    grid-template-columns: 1fr;
+  }
+}

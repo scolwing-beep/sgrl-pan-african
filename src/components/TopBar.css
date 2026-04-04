@@ -1,0 +1,67 @@
+.topbar {
+  background-color: var(--navy-dark);
+  color: var(--white);
+  font-size: 13px;
+  padding: 0;
+  border-bottom: 2px solid var(--gold);
+}
+
+.topbar-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 20px;
+}
+
+.topbar-social {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.topbar-social a {
+  color: var(--white);
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.topbar-social a:hover {
+  color: var(--gold);
+}
+
+.topbar-contact {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.topbar-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--white);
+  font-size: 13px;
+}
+
+.topbar-contact-item:hover {
+  color: var(--gold);
+}
+
+.topbar-contact-item svg {
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .topbar-container {
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px 15px;
+  }
+
+  .topbar-contact {
+    flex-direction: column;
+    gap: 4px;
+  }
+}

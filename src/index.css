@@ -1,0 +1,144 @@
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --navy: #1a3a5c;
+  --navy-dark: #0f2744;
+  --navy-light: #2a5580;
+  --gold: #d4a843;
+  --gold-light: #e8c96a;
+  --gold-dark: #b8912e;
+  --green: #4a7c3f;
+  --green-dark: #3a6331;
+  --green-light: #5a9a4a;
+  --white: #ffffff;
+  --off-white: #f7f7f7;
+  --text-dark: #333333;
+  --text-medium: #666666;
+  --text-light: #999999;
+  --font-family: 'Open Sans', Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 14px;
+  color: var(--text-medium);
+  line-height: 1.7em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-dark);
+  line-height: 1.3em;
+}
+
+/* ── Scroll-triggered Animations ── */
+
+/* Zoom-out: starts scaled up, settles to normal */
+@keyframes zoomOut {
+  0% { opacity: 0; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Continuous subtle zoom pulse on images */
+@keyframes zoomPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Slide in from right to left */
+@keyframes slideInRight {
+  0% { opacity: 0; transform: translateX(60px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Fade up entrance for cards */
+@keyframes fadeInUpScroll {
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Zoom-out entrance for image containers */
+.anim-zoom {
+  opacity: 0;
+  transform: scale(1.2);
+}
+
+.anim-zoom.in-view {
+  animation: zoomOut 0.8s ease forwards;
+}
+
+.anim-zoom.in-view img {
+  animation: zoomPulse 5s ease-in-out 0.8s infinite;
+}
+
+/* Slide from right for text */
+.anim-slide-right {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+.anim-slide-right.in-view {
+  animation: slideInRight 0.7s ease forwards;
+}
+
+/* Fade up entrance for cards */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.anim-fade-up.in-view {
+  animation: fadeInUpScroll 0.6s ease forwards;
+}
+
+/* Staggered animation delays */
+.anim-slide-right.in-view.delay-1,
+.anim-fade-up.in-view.delay-1,
+.anim-zoom.in-view.delay-1 { animation-delay: 0.1s; }
+.anim-slide-right.in-view.delay-2,
+.anim-fade-up.in-view.delay-2,
+.anim-zoom.in-view.delay-2 { animation-delay: 0.2s; }
+.anim-slide-right.in-view.delay-3,
+.anim-fade-up.in-view.delay-3,
+.anim-zoom.in-view.delay-3 { animation-delay: 0.3s; }
+.anim-slide-right.in-view.delay-4,
+.anim-fade-up.in-view.delay-4,
+.anim-zoom.in-view.delay-4 { animation-delay: 0.4s; }
+.anim-slide-right.in-view.delay-5,
+.anim-fade-up.in-view.delay-5,
+.anim-zoom.in-view.delay-5 { animation-delay: 0.5s; }
+.anim-slide-right.in-view.delay-6,
+.anim-fade-up.in-view.delay-6,
+.anim-zoom.in-view.delay-6 { animation-delay: 0.6s; }
+.anim-slide-right.in-view.delay-7,
+.anim-fade-up.in-view.delay-7,
+.anim-zoom.in-view.delay-7 { animation-delay: 0.7s; }
