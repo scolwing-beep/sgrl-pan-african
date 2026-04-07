@@ -2,21 +2,20 @@ import { useInView } from '../hooks/useInView'
 import './Overview.css'
 
 function Overview() {
-  const [imgRef, imgInView] = useInView()
   const [textRef, textInView] = useInView()
 
   return (
     <section className="overview" id="about-sgrl">
       <div className="overview-container">
-        <div className="overview-images" ref={imgRef}>
+        <div className="overview-images">
           <div className="overview-img-wrapper">
-            <div className={`overview-img-main anim-zoom${imgInView ? ' in-view' : ''}`}>
+            <div className="overview-img-main">
               <img
                 src="https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=600&q=80"
                 alt="African agriculture - corn field"
               />
             </div>
-            <div className={`overview-img-secondary anim-zoom${imgInView ? ' in-view' : ''} delay-2`}>
+            <div className="overview-img-secondary">
               <img
                 src="/images/cassava-roots.jpg"
                 alt="Cassava roots harvested from field"

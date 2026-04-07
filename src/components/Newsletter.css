@@ -49,52 +49,94 @@
   margin-bottom: 30px;
 }
 
-.newsletter-form {
+/* ── Brevo Form Overrides ── */
+.newsletter .sib-form {
+  text-align: center;
+  background-color: transparent;
+}
+
+.newsletter #sib-container {
+  background-color: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.newsletter .sib-form-message-panel {
+  margin-bottom: 15px;
+}
+
+.newsletter-fields {
   display: flex;
-  max-width: 500px;
+  max-width: 540px;
   margin: 0 auto;
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.newsletter-input {
+.newsletter-fields .sib-form-block {
+  margin: 0;
+  padding: 0;
+}
+
+.newsletter-fields .sib-input {
   flex: 1;
-  padding: 16px 20px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  font-family: var(--font-family);
-  color: var(--text-dark);
-  background: var(--white);
+}
+
+.newsletter-fields .form__entry,
+.newsletter-fields .entry_block,
+.newsletter-fields .form__label-row,
+.newsletter-fields .entry__field {
+  margin: 0;
+  padding: 0;
+}
+
+.newsletter-input {
+  width: 100%;
+  padding: 16px 20px !important;
+  border: none !important;
+  outline: none !important;
+  font-size: 15px !important;
+  font-family: var(--font-family) !important;
+  color: var(--text-dark) !important;
+  background: var(--white) !important;
+  border-radius: 0 !important;
+  height: auto !important;
+  box-sizing: border-box;
 }
 
 .newsletter-input::placeholder {
-  color: #999;
+  color: #999 !important;
 }
 
 .newsletter-btn {
-  padding: 16px 35px;
-  background: var(--green);
-  color: var(--white);
-  border: none;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: var(--font-family);
+  padding: 16px 35px !important;
+  background: var(--green) !important;
+  color: var(--white) !important;
+  border: none !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  font-family: var(--font-family) !important;
   cursor: pointer;
   transition: background 0.3s ease;
   white-space: nowrap;
+  border-radius: 0 !important;
+  height: auto !important;
 }
 
 .newsletter-btn:hover {
-  background: var(--green-dark);
+  background: var(--green-dark) !important;
 }
 
-.newsletter-success {
-  color: var(--gold-light);
-  font-size: 14px;
-  font-weight: 600;
-  margin-top: 15px;
+.newsletter-btn .sib-hide-loader-icon {
+  display: none;
+}
+
+/* Hide Brevo default labels and specs inside our form */
+.newsletter .entry__label,
+.newsletter .entry__specification,
+.newsletter .entry__error {
+  display: none;
 }
 
 @media (max-width: 600px) {
@@ -104,10 +146,10 @@
   .newsletter-title {
     font-size: 28px;
   }
-  .newsletter-form {
+  .newsletter-fields {
     flex-direction: column;
   }
   .newsletter-btn {
-    padding: 14px;
+    padding: 14px !important;
   }
 }

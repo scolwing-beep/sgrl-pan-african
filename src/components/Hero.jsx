@@ -18,7 +18,7 @@ const slides = [
     description: 'Bridging African commodity suppliers with global markets.',
   },
   {
-    image: 'https://images.unsplash.com/photo-1595508064774-5ff825a66588?w=1920&q=80',
+    image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=1920&q=80',
     subtitle: 'Commodity Supply Chain',
     title: 'Building Africa\'s',
     highlight: 'Future',
@@ -65,12 +65,7 @@ function Hero() {
             className += direction === 'down' ? ' hero-slide--enter-down' : ' hero-slide--enter-up'
           }
           return (
-            <div key={index} className={className}>
-              <img
-                src={slide.image}
-                alt=""
-                className={`hero-slide-bg${isActive ? ' hero-slide-bg--zoom' : ''}`}
-              />
+            <div key={index} className={className} style={{ backgroundImage: `url(${slide.image})` }}>
               <div className="hero-overlay"></div>
               <div className="hero-content">
                 <div className="hero-subtitle-row">

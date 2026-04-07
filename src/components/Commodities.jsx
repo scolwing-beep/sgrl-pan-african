@@ -57,7 +57,7 @@ function Commodities() {
         <div className="commodities-grid" ref={gridRef}>
           {commodities.map((item, index) => (
             <div key={index} className={`commodity-card anim-fade-up${gridInView ? ' in-view' : ''} delay-${index + 1}`}>
-              <div className={`commodity-img anim-zoom${gridInView ? ' in-view' : ''} delay-${index + 1}`}>
+              <div className="commodity-img">
                 <img src={item.image} alt={item.name} />
                 <div className="commodity-badge">{item.grade}</div>
               </div>
