@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { FaUser, FaEnvelope, FaArrowRightToBracket, FaCircleInfo, FaXTwitter } from 'react-icons/fa6'
-import { FaWhatsapp } from 'react-icons/fa'
-import { FaShareAlt } from 'react-icons/fa'
+import { FaWhatsapp, FaShareAlt } from 'react-icons/fa'
 import { useInView } from '../hooks/useInView'
 import './MembersRegistration.css'
 

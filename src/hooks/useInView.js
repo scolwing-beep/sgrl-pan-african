@@ -20,7 +20,7 @@ export function useInView(options = {}) {
 
     observer.observe(element)
     return () => observer.disconnect()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return [ref, isInView]
 }

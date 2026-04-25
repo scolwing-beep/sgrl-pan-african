@@ -79,6 +79,7 @@ function Navbar() {
           className="navbar-toggle"
           onClick={() => setMobileOpen(!mobileOpen)}
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? <FaTimes /> : <FaBars />}
         </button>

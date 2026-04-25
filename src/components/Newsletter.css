@@ -139,9 +139,17 @@
   display: none;
 }
 
+/* iOS Safari does not support background-attachment: fixed */
+@supports (-webkit-touch-callout: none) {
+  .newsletter {
+    background-attachment: scroll;
+  }
+}
+
 @media (max-width: 600px) {
   .newsletter {
     padding: 50px 15px;
+    background-attachment: scroll;
   }
   .newsletter-title {
     font-size: 28px;

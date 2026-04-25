@@ -1,17 +1,17 @@
 import { FaFacebookF, FaXTwitter, FaInstagram, FaLinkedinIn, FaLocationDot, FaPhone, FaEnvelope } from 'react-icons/fa6'
 import './Footer.css'
 
-function Footer() {
-  const scrollTo = (targetId) => {
-    const el = document.getElementById(targetId)
-    if (el) {
-      const offset = 80
-      const top = el.getBoundingClientRect().top + window.pageYOffset - offset
-      window.scrollTo({ top, behavior: 'smooth' })
-    }
+function scrollTo(targetId) {
+  const el = document.getElementById(targetId)
+  if (el) {
+    const offset = 80
+    const top = el.getBoundingClientRect().top + window.pageYOffset - offset
+    window.scrollTo({ top, behavior: 'smooth' })
   }
+}
 
-  const Link = ({ to, children }) => (
+function FooterLink({ to, children }) {
+  return (
     <a
       href="#"
       onClick={(e) => {
@@ -22,7 +22,9 @@ function Footer() {
       {children}
     </a>
   )
+}
 
+function Footer() {
   return (
     <footer className="footer">
       <div className="footer-main">
@@ -45,22 +47,22 @@ function Footer() {
           <div className="footer-col">
             <h3 className="footer-heading">Quick Links</h3>
             <ul>
-              <li><Link to="about-sgrl">About Us</Link></li>
-              <li><Link to="services">Our Services</Link></li>
-              <li><Link to="services">Trade Facilitation</Link></li>
-              <li><Link to="commodity-supply">Commodity Sourcing</Link></li>
-              <li><Link to="market-access">Our Markets</Link></li>
+              <li><FooterLink to="about-sgrl">About Us</FooterLink></li>
+              <li><FooterLink to="services">Our Services</FooterLink></li>
+              <li><FooterLink to="services">Trade Facilitation</FooterLink></li>
+              <li><FooterLink to="commodity-supply">Commodity Sourcing</FooterLink></li>
+              <li><FooterLink to="market-access">Our Markets</FooterLink></li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h3 className="footer-heading">Resources</h3>
             <ul>
-              <li><Link to="market-reports">Market Reports</Link></li>
-              <li><Link to="publications">Publications</Link></li>
-              <li><Link to="members-only">Member Portal</Link></li>
-              <li><Link to="newsletter">Newsletter</Link></li>
-              <li><Link to="careers">Careers</Link></li>
+              <li><FooterLink to="market-reports">Market Reports</FooterLink></li>
+              <li><FooterLink to="publications">Publications</FooterLink></li>
+              <li><FooterLink to="members-only">Member Portal</FooterLink></li>
+              <li><FooterLink to="newsletter">Newsletter</FooterLink></li>
+              <li><FooterLink to="careers">Careers</FooterLink></li>
             </ul>
           </div>
 

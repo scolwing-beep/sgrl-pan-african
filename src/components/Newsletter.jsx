@@ -77,9 +77,9 @@ function Newsletter() {
                             className="input newsletter-input"
                             maxLength="200"
                             type="text"
-                            id="LASTNAME"
-                            name="LASTNAME"
-                            autoComplete="off"
+                            id="FIRSTNAME"
+                            name="FIRSTNAME"
+                            autoComplete="given-name"
                             placeholder="First name"
                           />
                         </div>
@@ -93,10 +93,10 @@ function Newsletter() {
                         <div className="entry__field">
                           <input
                             className="input newsletter-input"
-                            type="text"
+                            type="email"
                             id="EMAIL"
                             name="EMAIL"
-                            autoComplete="off"
+                            autoComplete="email"
                             placeholder="Email *"
                             data-required="true"
                             required
@@ -120,7 +120,7 @@ function Newsletter() {
                   </div>
                 </div>
 
-                <input type="text" name="email_address_check" value="" className="input--hidden" style={{ display: 'none' }} />
+                <input type="text" name="email_address_check" defaultValue="" className="input--hidden" style={{ display: 'none' }} readOnly />
                 <input type="hidden" name="locale" value="en" />
               </form>
             </div>
