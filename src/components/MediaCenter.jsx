@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaImages, FaChartLine, FaTimes, FaExternalLinkAlt } from 'react-icons/fa6'
+import { FaImages, FaChartLine, FaXmark, FaArrowUpRightFromSquare } from 'react-icons/fa6'
 import { useInView } from '../hooks/useInView'
 import './MediaCenter.css'
 
@@ -62,7 +62,7 @@ function NewsModal({ item, onClose }) {
     <div className="news-modal-overlay" onClick={onClose}>
       <div className="news-modal" onClick={(e) => e.stopPropagation()}>
         <button className="news-modal-close" onClick={onClose} aria-label="Close">
-          <FaTimes />
+          <FaXmark />
         </button>
         <span className="news-modal-category">{item.category}</span>
         <span className="news-modal-date">{item.date}</span>
@@ -82,7 +82,7 @@ function NewsModal({ item, onClose }) {
           rel="noopener noreferrer"
           className="news-modal-source"
         >
-          <FaExternalLinkAlt /> {item.source}
+          <FaArrowUpRightFromSquare /> {item.source}
         </a>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FaBriefcase, FaLocationDot, FaClock, FaTimes, FaPaperPlane, FaUser, FaEnvelope, FaPhone, FaFileLines } from 'react-icons/fa6'
+import { FaBriefcase, FaLocationDot, FaClock, FaXmark, FaPaperPlane, FaUser, FaEnvelope, FaPhone, FaFileLines } from 'react-icons/fa6'
 import { useInView } from '../hooks/useInView'
 import './Careers.css'
 
@@ -100,7 +100,7 @@ function ApplyModal({ job, onClose }) {
   return (
     <div className="apply-overlay" onClick={onClose}>
       <div className="apply-modal" onClick={(e) => e.stopPropagation()}>
-        <button className="apply-modal-close" onClick={onClose} aria-label="Close"><FaTimes /></button>
+        <button className="apply-modal-close" onClick={onClose} aria-label="Close"><FaXmark /></button>
 
         {submitted ? (
           <div className="apply-success">
