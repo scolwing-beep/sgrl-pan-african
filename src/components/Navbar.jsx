@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { FaChevronDown, FaBars, FaTimes } from 'react-icons/fa'
 import logo from '../assets/images/sgrl-logo.png'
 import './Navbar.css'
@@ -45,10 +45,38 @@ const menuItems = [
 function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 980)
+  const navRef = useRef(null)
 
-  const toggleDropdown = (index) => {
-    setActiveDropdown(activeDropdown === index ? null : index)
-  }
+  // Track viewport width to separate desktop/mobile behaviour
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 980px)')
+    const onChange = (e) => {
+      setIsMobile(e.matches)
+      if (!e.matches) {
+        setMobileOpen(false)
+        setActiveDropdown(null)
+      }
+    }
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
+  // Close everything when clicking outside the navbar
+  useEffect(() => {
+    const onOutsideClick = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setMobileOpen(false)
+        setActiveDropdown(null)
+      }
+    }
+    document.addEventListener('mousedown', onOutsideClick)
+    document.addEventListener('touchstart', onOutsideClick)
+    return () => {
+      document.removeEventListener('mousedown', onOutsideClick)
+      document.removeEventListener('touchstart', onOutsideClick)
+    }
+  }, [])
 
   const scrollTo = useCallback((targetId) => {
     const el = document.getElementById(targetId)
@@ -61,8 +89,20 @@ function Navbar() {
     setActiveDropdown(null)
   }, [])
 
+  const handleParentClick = (e, item, index) => {
+    e.preventDefault()
+    if (item.submenu) {
+      if (isMobile) {
+        setActiveDropdown(activeDropdown === index ? null : index)
+      }
+      // Desktop: hover handles open/close — click does nothing
+    } else if (item.target) {
+      scrollTo(item.target)
+    }
+  }
+
   return (
-    <nav className="navbar">
+    <nav className="navbar" ref={navRef}>
       <div className="navbar-container">
         <a
           href="#"
@@ -77,55 +117,61 @@ function Navbar() {
 
         <button
           className="navbar-toggle"
-          onClick={() => setMobileOpen(!mobileOpen)}
+          onClick={() => {
+            setMobileOpen((prev) => !prev)
+            setActiveDropdown(null)
+          }}
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
           {mobileOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        <ul className={`navbar-menu ${mobileOpen ? 'active' : ''}`}>
-          {menuItems.map((item, index) => (
-            <li
-              key={index}
-              className={`navbar-item ${item.submenu ? 'has-dropdown' : ''}`}
-              onMouseEnter={() => item.submenu && setActiveDropdown(index)}
-              onMouseLeave={() => item.submenu && setActiveDropdown(null)}
-            >
-              <a
-                href="#"
-                className="navbar-link"
-                onClick={(e) => {
-                  e.preventDefault()
-                  if (item.submenu) {
-                    toggleDropdown(index)
-                  } else if (item.target) {
-                    scrollTo(item.target)
-                  }
+        <ul className={`navbar-menu${mobileOpen ? ' active' : ''}`}>
+          {menuItems.map((item, index) => {
+            const isOpen = activeDropdown === index
+            return (
+              <li
+                key={index}
+                className={`navbar-item${item.submenu ? ' has-dropdown' : ''}`}
+                onMouseEnter={() => {
+                  if (!isMobile && item.submenu) setActiveDropdown(index)
+                }}
+                onMouseLeave={() => {
+                  if (!isMobile && item.submenu) setActiveDropdown(null)
                 }}
               >
-                {item.label}
-                {item.submenu && <FaChevronDown className="dropdown-arrow" />}
-              </a>
-              {item.submenu && (
-                <ul className={`dropdown-menu ${activeDropdown === index ? 'show' : ''}`}>
-                  {item.submenu.map((sub, subIndex) => (
-                    <li key={subIndex}>
-                      <a
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          scrollTo(sub.target)
-                        }}
-                      >
-                        {sub.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+                <a
+                  href="#"
+                  className={`navbar-link${isOpen ? ' open' : ''}`}
+                  onClick={(e) => handleParentClick(e, item, index)}
+                >
+                  {item.label}
+                  {item.submenu && (
+                    <FaChevronDown className={`dropdown-arrow${isOpen ? ' rotated' : ''}`} />
+                  )}
+                </a>
+
+                {item.submenu && (
+                  <ul className={`dropdown-menu${isOpen ? ' show' : ''}`}>
+                    {item.submenu.map((sub, subIndex) => (
+                      <li key={subIndex}>
+                        <a
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            scrollTo(sub.target)
+                          }}
+                        >
+                          {sub.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            )
+          })}
         </ul>
       </div>
     </nav>
