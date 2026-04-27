@@ -1,28 +1,34 @@
 import { useState, useEffect, useCallback } from 'react'
-import { FaChevronUp, FaChevronDown } from 'react-icons/fa'
+import { FaChevronUp, FaChevronDown, FaArrowRight, FaPhone } from 'react-icons/fa6'
 import './Hero.css'
 
 const slides = [
   {
     image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1920&q=80',
     subtitle: 'Scolwing Global Resources Limited',
-    title: 'Welcome To',
-    highlight: 'SGRL',
-    description: 'Connecting Africa. Creating Value. Building Wealth.',
+    title: 'Connecting Africa.',
+    highlight: 'Creating Value.',
+    description: 'Pan-African agribusiness facilitator bridging commodity suppliers with global markets.',
+    cta1: { label: 'Explore Our Services', target: 'services' },
+    cta2: { label: 'Get In Touch', target: 'members-only' },
   },
   {
     image: '/images/cassava-roots.jpg',
     subtitle: 'Pan-African Trade Facilitation',
     title: 'Driving Sustainable',
-    highlight: 'Growth',
-    description: 'Bridging African commodity suppliers with global markets.',
+    highlight: 'Growth Across Africa',
+    description: 'From farm gate to international port — we power every step of the commodity supply chain.',
+    cta1: { label: 'Our Commodities', target: 'commodity-supply' },
+    cta2: { label: 'Our Markets', target: 'market-access' },
   },
   {
     image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=1920&q=80',
     subtitle: 'Commodity Supply Chain',
-    title: 'Building Africa\'s',
-    highlight: 'Future',
-    description: 'From farm gate to international ports, powering trade across the continent.',
+    title: "Building Africa's",
+    highlight: 'Trade Future',
+    description: 'Connecting suppliers in Nigeria, Ghana, Zambia & beyond with verified international buyers.',
+    cta1: { label: 'Join as a Member', target: 'members-only' },
+    cta2: { label: 'View Market Data', target: 'news' },
   },
 ]
 
@@ -40,13 +46,11 @@ function Hero() {
   }, [isAnimating])
 
   const goUp = useCallback(() => {
-    const prev = currentSlide === 0 ? slides.length - 1 : currentSlide - 1
-    goToSlide(prev, 'up')
+    goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1, 'up')
   }, [currentSlide, goToSlide])
 
   const goDown = useCallback(() => {
-    const next = currentSlide === slides.length - 1 ? 0 : currentSlide + 1
-    goToSlide(next, 'down')
+    goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1, 'down')
   }, [currentSlide, goToSlide])
 
   useEffect(() => {
@@ -54,40 +58,68 @@ function Hero() {
     return () => clearInterval(timer)
   }, [goDown])
 
+  const scrollTo = (targetId) => {
+    const el = document.getElementById(targetId)
+    if (el) {
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 80
+      window.scrollTo({ top, behavior: 'smooth' })
+    }
+  }
+
   return (
     <section className="hero-slider">
       <div className="hero-slides-track">
         {slides.map((slide, index) => {
-          let className = 'hero-slide'
+          let cls = 'hero-slide'
           const isActive = index === currentSlide
           if (isActive) {
-            className += ' hero-slide--active'
-            className += direction === 'down' ? ' hero-slide--enter-down' : ' hero-slide--enter-up'
+            cls += ' hero-slide--active'
+            cls += direction === 'down' ? ' hero-slide--enter-down' : ' hero-slide--enter-up'
           }
           return (
-            <div key={index} className={className} style={{ backgroundImage: `url(${slide.image})` }}>
-              <div className="hero-overlay"></div>
+            <div key={index} className={cls} style={{ backgroundImage: `url(${slide.image})` }}>
+              <div className="hero-overlay" />
               <div className="hero-content">
-                <div className="hero-subtitle-row">
+                <div className="hero-eyebrow">
+                  <span className="hero-line" />
                   <span className="hero-subtitle">{slide.subtitle}</span>
-                  <span className="hero-line"></span>
                 </div>
                 <h1 className="hero-title">
-                  {slide.title} <span className="hero-highlight">{slide.highlight}</span>
+                  {slide.title}<br />
+                  <span className="hero-highlight">{slide.highlight}</span>
                 </h1>
                 <p className="hero-description">{slide.description}</p>
+                <div className="hero-actions">
+                  <button className="hero-btn hero-btn-primary" onClick={() => scrollTo(slide.cta1.target)}>
+                    {slide.cta1.label} <FaArrowRight />
+                  </button>
+                  <button className="hero-btn hero-btn-secondary" onClick={() => scrollTo(slide.cta2.target)}>
+                    <FaPhone /> {slide.cta2.label}
+                  </button>
+                </div>
               </div>
             </div>
           )
         })}
       </div>
 
-      <button className="hero-nav hero-nav-up" onClick={goUp} aria-label="Previous slide">
-        <FaChevronUp />
-      </button>
-      <button className="hero-nav hero-nav-down" onClick={goDown} aria-label="Next slide">
-        <FaChevronDown />
-      </button>
+      {/* Slide dots */}
+      <div className="hero-dots">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            className={`hero-dot${i === currentSlide ? ' active' : ''}`}
+            onClick={() => goToSlide(i, i > currentSlide ? 'down' : 'up')}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
+
+      {/* Vertical nav arrows */}
+      <div className="hero-nav-wrap">
+        <button className="hero-nav" onClick={goUp} aria-label="Previous slide"><FaChevronUp /></button>
+        <button className="hero-nav" onClick={goDown} aria-label="Next slide"><FaChevronDown /></button>
+      </div>
     </section>
   )
 }

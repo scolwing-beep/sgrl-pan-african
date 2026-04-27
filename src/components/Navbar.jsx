@@ -46,81 +46,67 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState(null)
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 980)
+  const [scrolled, setScrolled] = useState(false)
   const navRef = useRef(null)
 
-  // Track viewport width to separate desktop/mobile behaviour
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 980px)')
     const onChange = (e) => {
       setIsMobile(e.matches)
-      if (!e.matches) {
-        setMobileOpen(false)
-        setActiveDropdown(null)
-      }
+      if (!e.matches) { setMobileOpen(false); setActiveDropdown(null) }
     }
     mq.addEventListener('change', onChange)
     return () => mq.removeEventListener('change', onChange)
   }, [])
 
-  // Close everything when clicking outside the navbar
   useEffect(() => {
-    const onOutsideClick = (e) => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const onOutside = (e) => {
       if (navRef.current && !navRef.current.contains(e.target)) {
-        setMobileOpen(false)
-        setActiveDropdown(null)
+        setMobileOpen(false); setActiveDropdown(null)
       }
     }
-    document.addEventListener('mousedown', onOutsideClick)
-    document.addEventListener('touchstart', onOutsideClick)
+    document.addEventListener('mousedown', onOutside)
+    document.addEventListener('touchstart', onOutside)
     return () => {
-      document.removeEventListener('mousedown', onOutsideClick)
-      document.removeEventListener('touchstart', onOutsideClick)
+      document.removeEventListener('mousedown', onOutside)
+      document.removeEventListener('touchstart', onOutside)
     }
   }, [])
 
   const scrollTo = useCallback((targetId) => {
     const el = document.getElementById(targetId)
     if (el) {
-      const offset = 80
-      const top = el.getBoundingClientRect().top + window.pageYOffset - offset
+      const top = el.getBoundingClientRect().top + window.pageYOffset - 80
       window.scrollTo({ top, behavior: 'smooth' })
     }
-    setMobileOpen(false)
-    setActiveDropdown(null)
+    setMobileOpen(false); setActiveDropdown(null)
   }, [])
 
   const handleParentClick = (e, item, index) => {
     e.preventDefault()
     if (item.submenu) {
-      if (isMobile) {
-        setActiveDropdown(activeDropdown === index ? null : index)
-      }
-      // Desktop: hover handles open/close — click does nothing
+      if (isMobile) setActiveDropdown(activeDropdown === index ? null : index)
     } else if (item.target) {
       scrollTo(item.target)
     }
   }
 
   return (
-    <nav className="navbar" ref={navRef}>
+    <nav className={`navbar${scrolled ? ' scrolled' : ''}`} ref={navRef}>
       <div className="navbar-container">
-        <a
-          href="#"
-          className="navbar-logo"
-          onClick={(e) => {
-            e.preventDefault()
-            window.scrollTo({ top: 0, behavior: 'smooth' })
-          }}
-        >
-          <img src={logo} alt="SGRL - Scolwing Global Resources Limited" />
+        <a href="#" className="navbar-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+          <img src={logo} alt="SGRL – Scolwing Global Resources Limited" />
         </a>
 
         <button
           className="navbar-toggle"
-          onClick={() => {
-            setMobileOpen((prev) => !prev)
-            setActiveDropdown(null)
-          }}
+          onClick={() => { setMobileOpen(p => !p); setActiveDropdown(null) }}
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
@@ -134,37 +120,18 @@ function Navbar() {
               <li
                 key={index}
                 className={`navbar-item${item.submenu ? ' has-dropdown' : ''}`}
-                onMouseEnter={() => {
-                  if (!isMobile && item.submenu) setActiveDropdown(index)
-                }}
-                onMouseLeave={() => {
-                  if (!isMobile && item.submenu) setActiveDropdown(null)
-                }}
+                onMouseEnter={() => { if (!isMobile && item.submenu) setActiveDropdown(index) }}
+                onMouseLeave={() => { if (!isMobile && item.submenu) setActiveDropdown(null) }}
               >
-                <a
-                  href="#"
-                  className={`navbar-link${isOpen ? ' open' : ''}`}
-                  onClick={(e) => handleParentClick(e, item, index)}
-                >
+                <a href="#" className={`navbar-link${isOpen ? ' open' : ''}`} onClick={(e) => handleParentClick(e, item, index)}>
                   {item.label}
-                  {item.submenu && (
-                    <FaChevronDown className={`dropdown-arrow${isOpen ? ' rotated' : ''}`} />
-                  )}
+                  {item.submenu && <FaChevronDown className={`dropdown-arrow${isOpen ? ' rotated' : ''}`} />}
                 </a>
-
                 {item.submenu && (
                   <ul className={`dropdown-menu${isOpen ? ' show' : ''}`}>
-                    {item.submenu.map((sub, subIndex) => (
-                      <li key={subIndex}>
-                        <a
-                          href="#"
-                          onClick={(e) => {
-                            e.preventDefault()
-                            scrollTo(sub.target)
-                          }}
-                        >
-                          {sub.label}
-                        </a>
+                    {item.submenu.map((sub, si) => (
+                      <li key={si}>
+                        <a href="#" onClick={(e) => { e.preventDefault(); scrollTo(sub.target) }}>{sub.label}</a>
                       </li>
                     ))}
                   </ul>
@@ -172,6 +139,11 @@ function Navbar() {
               </li>
             )
           })}
+          <li className="navbar-item navbar-cta">
+            <a href="#" className="navbar-cta-btn" onClick={(e) => { e.preventDefault(); scrollTo('members-only') }}>
+              Member Login
+            </a>
+          </li>
         </ul>
       </div>
     </nav>

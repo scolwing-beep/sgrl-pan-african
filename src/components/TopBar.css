@@ -1,8 +1,7 @@
 .topbar {
-  background-color: var(--navy-dark);
-  color: var(--white);
-  font-size: 13px;
-  padding: 0;
+  background: var(--navy-dark);
+  color: rgba(255,255,255,0.85);
+  font-size: 12.5px;
   border-bottom: 2px solid var(--gold);
 }
 
@@ -12,56 +11,56 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 20px;
+  padding: 7px 24px;
 }
 
 .topbar-social {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   align-items: center;
 }
 
 .topbar-social a {
-  color: var(--white);
-  font-size: 14px;
-  transition: color 0.3s ease;
+  color: rgba(255,255,255,0.7);
+  font-size: 13px;
+  transition: color 0.25s ease;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
 .topbar-social a:hover {
   color: var(--gold);
+  border-color: var(--gold);
 }
 
 .topbar-contact {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: center;
 }
 
 .topbar-contact-item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: var(--white);
-  font-size: 13px;
+  gap: 7px;
+  color: rgba(255,255,255,0.8);
+  font-size: 12.5px;
+  transition: color 0.25s ease;
 }
 
-.topbar-contact-item:hover {
+.topbar-contact-item:hover { color: var(--gold); }
+
+.topbar-contact-item svg {
+  font-size: 11px;
   color: var(--gold);
 }
 
-.topbar-contact-item svg {
-  font-size: 12px;
-}
-
+/* Hide topbar on small screens to save space */
 @media (max-width: 768px) {
-  .topbar-container {
-    flex-direction: column;
-    gap: 8px;
-    padding: 6px 15px;
-  }
-
-  .topbar-contact {
-    flex-direction: column;
-    gap: 4px;
-  }
+  .topbar { display: none; }
 }

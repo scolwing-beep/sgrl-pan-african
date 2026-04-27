@@ -2,13 +2,14 @@ import './App.css'
 import TopBar from './components/TopBar'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
+import StatsBar from './components/StatsBar'
 import Overview from './components/Overview'
-import Team from './components/Team'
-import History from './components/History'
-import Partners from './components/Partners'
 import Services from './components/Services'
 import Commodities from './components/Commodities'
 import Markets from './components/Markets'
+import Team from './components/Team'
+import History from './components/History'
+import Partners from './components/Partners'
 import KnowledgeCenter from './components/KnowledgeCenter'
 import MediaCenter from './components/MediaCenter'
 import Careers from './components/Careers'
@@ -22,13 +23,14 @@ function App() {
       <TopBar />
       <Navbar />
       <Hero />
+      <StatsBar />
       <Overview />
-      <Team />
-      <History />
-      <Partners />
       <Services />
       <Commodities />
       <Markets />
+      <Team />
+      <History />
+      <Partners />
       <KnowledgeCenter />
       <MediaCenter />
       <Careers />

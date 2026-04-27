@@ -1,25 +1,21 @@
 .hero-slider {
   position: relative;
-  height: 85vh;
-  min-height: 500px;
-  max-height: 800px;
+  height: 88vh;
+  min-height: 560px;
+  max-height: 860px;
   overflow: hidden;
 }
 
-/* ── Slides Track ── */
 .hero-slides-track {
   position: relative;
   width: 100%;
   height: 100%;
 }
 
-/* ── Individual Slide ── */
+/* ── Slide ── */
 .hero-slide {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -30,57 +26,37 @@
   pointer-events: none;
 }
 
-/* Active slide */
 .hero-slide--active {
   opacity: 1;
   z-index: 1;
   pointer-events: auto;
 }
 
-/* Vertical slide-in from below */
 .hero-slide--active.hero-slide--enter-down {
-  animation: slideInDown 0.8s ease forwards;
+  animation: slideEnterDown 0.85s cubic-bezier(0.22,1,0.36,1) forwards;
 }
-
-/* Vertical slide-in from above */
 .hero-slide--active.hero-slide--enter-up {
-  animation: slideInUp 0.8s ease forwards;
+  animation: slideEnterUp 0.85s cubic-bezier(0.22,1,0.36,1) forwards;
 }
 
-@keyframes slideInDown {
-  0% {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes slideEnterDown {
+  from { transform: translateY(80px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
-
-@keyframes slideInUp {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+@keyframes slideEnterUp {
+  from { transform: translateY(-80px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
 
 /* ── Overlay ── */
 .hero-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  inset: 0;
   background: linear-gradient(
-    135deg,
-    rgba(15, 39, 68, 0.75) 0%,
-    rgba(26, 58, 92, 0.55) 50%,
-    rgba(74, 124, 63, 0.45) 100%
+    105deg,
+    rgba(10, 25, 47, 0.82) 0%,
+    rgba(15, 39, 68, 0.65) 55%,
+    rgba(74, 124, 63, 0.35) 100%
   );
   z-index: 1;
 }
@@ -91,130 +67,182 @@
   z-index: 2;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 60px;
+  padding: 0 64px;
   width: 100%;
+  max-width: 720px;
+  margin-left: 5%;
 }
 
-.hero-subtitle-row {
+.hero-eyebrow {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  animation: fadeInUp 0.6s ease 0.3s both;
-}
-
-.hero-subtitle {
-  color: var(--white);
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.5px;
+  gap: 14px;
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s ease 0.2s both;
 }
 
 .hero-line {
   display: inline-block;
-  width: 70px;
+  width: 40px;
   height: 3px;
-  background-color: var(--white);
+  background: var(--gold);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.hero-subtitle {
+  color: rgba(255,255,255,0.85);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: var(--font-body);
 }
 
 .hero-title {
+  font-family: var(--font-heading);
   color: var(--white);
-  font-size: 60px;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-bottom: 15px;
-  animation: fadeInUp 0.6s ease 0.45s both;
+  font-size: 62px;
+  font-weight: 800;
+  line-height: 1.08;
+  margin-bottom: 18px;
+  animation: fadeUp 0.6s ease 0.35s both;
 }
 
-.hero-highlight {
-  color: var(--gold);
-}
+.hero-highlight { color: var(--gold); }
 
 .hero-description {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 18px;
+  color: rgba(255,255,255,0.88);
+  font-size: 17px;
   font-weight: 300;
-  letter-spacing: 0.5px;
-  animation: fadeInUp 0.6s ease 0.6s both;
+  line-height: 1.7;
+  margin-bottom: 36px;
+  max-width: 520px;
+  animation: fadeUp 0.6s ease 0.5s both;
 }
 
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(25px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ── CTA Buttons ── */
+.hero-actions {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.65s both;
 }
 
-/* ── Navigation Arrows ── */
-.hero-nav {
-  position: absolute;
-  right: 30px;
-  z-index: 10;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.4);
+.hero-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.28s ease;
+  white-space: nowrap;
+}
+
+.hero-btn-primary {
+  background: var(--green);
   color: var(--white);
-  width: 45px;
-  height: 45px;
+  border-color: var(--green);
+}
+.hero-btn-primary:hover {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(74,124,63,0.4);
+}
+
+.hero-btn-secondary {
+  background: transparent;
+  color: var(--white);
+  border-color: rgba(255,255,255,0.5);
+}
+.hero-btn-secondary:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--white);
+  transform: translateY(-2px);
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Slide Dots ── */
+.hero-dots {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+}
+
+.hero-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+.hero-dot.active {
+  background: var(--gold);
+  width: 28px;
+  border-radius: 4px;
+}
+
+/* ── Nav arrows ── */
+.hero-nav-wrap {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 10;
+}
+
+.hero-nav {
+  width: 42px;
+  height: 42px;
+  background: rgba(255,255,255,0.12);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: var(--white);
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 16px;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(4px);
 }
-
 .hero-nav:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: var(--white);
-}
-
-.hero-nav-up {
-  top: 50%;
-  transform: translateY(-60px);
-}
-
-.hero-nav-down {
-  top: 50%;
-  transform: translateY(10px);
+  background: var(--green);
+  border-color: var(--green);
 }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .hero-slider {
-    height: 60vh;
-    min-height: 400px;
-  }
-
-  .hero-content {
-    padding: 0 25px;
-  }
-
-  .hero-title {
-    font-size: 38px;
-  }
-
-  .hero-subtitle {
-    font-size: 14px;
-  }
-
-  .hero-description {
-    font-size: 15px;
-  }
-
-  .hero-nav {
-    width: 36px;
-    height: 36px;
-    right: 15px;
-    font-size: 13px;
-  }
+  .hero-slider { height: 70vh; min-height: 460px; }
+  .hero-content { padding: 0 24px; margin-left: 0; max-width: 100%; }
+  .hero-title { font-size: 38px; }
+  .hero-description { font-size: 14px; }
+  .hero-btn { padding: 12px 20px; font-size: 13px; }
+  .hero-nav-wrap { display: none; }
 }
 
 @media (max-width: 480px) {
-  .hero-title {
-    font-size: 30px;
-  }
+  .hero-title { font-size: 30px; }
+  .hero-actions { flex-direction: column; }
+  .hero-btn { justify-content: center; }
 }
