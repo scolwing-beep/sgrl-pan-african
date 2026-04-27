@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FaChevronUp, FaChevronDown, FaArrowRight, FaPhone } from 'react-icons/fa6'
 import './Hero.css'
 
@@ -9,8 +10,8 @@ const slides = [
     title: 'Connecting Africa.',
     highlight: 'Creating Value.',
     description: 'Pan-African agribusiness facilitator bridging commodity suppliers with global markets.',
-    cta1: { label: 'Explore Our Services', target: 'services' },
-    cta2: { label: 'Get In Touch', target: 'members-only' },
+    cta1: { label: 'Explore Our Services', page: '/services' },
+    cta2: { label: 'Get In Touch', page: '/contact' },
   },
   {
     image: '/images/cassava-roots.jpg',
@@ -18,8 +19,8 @@ const slides = [
     title: 'Driving Sustainable',
     highlight: 'Growth Across Africa',
     description: 'From farm gate to international port — we power every step of the commodity supply chain.',
-    cta1: { label: 'Our Commodities', target: 'commodity-supply' },
-    cta2: { label: 'Our Markets', target: 'market-access' },
+    cta1: { label: 'Our Commodities', page: '/services' },
+    cta2: { label: 'Our Markets', page: '/services' },
   },
   {
     image: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?w=1920&q=80',
@@ -27,8 +28,8 @@ const slides = [
     title: "Building Africa's",
     highlight: 'Trade Future',
     description: 'Connecting suppliers in Nigeria, Ghana, Zambia & beyond with verified international buyers.',
-    cta1: { label: 'Join as a Member', target: 'members-only' },
-    cta2: { label: 'View Market Data', target: 'news' },
+    cta1: { label: 'Become a Member', page: '/contact' },
+    cta2: { label: 'View Market Data', page: '/knowledge' },
   },
 ]
 
@@ -36,6 +37,7 @@ function Hero() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
   const [direction, setDirection] = useState('down')
+  const navigate = useNavigate()
 
   const goToSlide = useCallback((newIndex, dir) => {
     if (isAnimating) return
@@ -57,14 +59,6 @@ function Hero() {
     const timer = setInterval(goDown, 6000)
     return () => clearInterval(timer)
   }, [goDown])
-
-  const scrollTo = (targetId) => {
-    const el = document.getElementById(targetId)
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.pageYOffset - 80
-      window.scrollTo({ top, behavior: 'smooth' })
-    }
-  }
 
   return (
     <section className="hero-slider">
@@ -90,10 +84,10 @@ function Hero() {
                 </h1>
                 <p className="hero-description">{slide.description}</p>
                 <div className="hero-actions">
-                  <button className="hero-btn hero-btn-primary" onClick={() => scrollTo(slide.cta1.target)}>
+                  <button className="hero-btn hero-btn-primary" onClick={() => navigate(slide.cta1.page)}>
                     {slide.cta1.label} <FaArrowRight />
                   </button>
-                  <button className="hero-btn hero-btn-secondary" onClick={() => scrollTo(slide.cta2.target)}>
+                  <button className="hero-btn hero-btn-secondary" onClick={() => navigate(slide.cta2.page)}>
                     <FaPhone /> {slide.cta2.label}
                   </button>
                 </div>

@@ -1,43 +1,31 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
 import TopBar from './components/TopBar'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import StatsBar from './components/StatsBar'
-import Overview from './components/Overview'
-import Services from './components/Services'
-import Commodities from './components/Commodities'
-import Markets from './components/Markets'
-import Team from './components/Team'
-import History from './components/History'
-import Partners from './components/Partners'
-import KnowledgeCenter from './components/KnowledgeCenter'
-import MediaCenter from './components/MediaCenter'
-import Careers from './components/Careers'
-import Newsletter from './components/Newsletter'
-import MembersRegistration from './components/MembersRegistration'
-import Footer from './components/Footer'
+import ScrollToTop from './components/ScrollToTop'
+import HomePage from './pages/HomePage'
+import AboutPage from './pages/AboutPage'
+import ServicesPage from './pages/ServicesPage'
+import KnowledgePage from './pages/KnowledgePage'
+import CareersPage from './pages/CareersPage'
+import ContactPage from './pages/ContactPage'
 
 function App() {
   return (
-    <>
+    <BrowserRouter>
+      <ScrollToTop />
       <TopBar />
       <Navbar />
-      <Hero />
-      <StatsBar />
-      <Overview />
-      <Services />
-      <Commodities />
-      <Markets />
-      <Team />
-      <History />
-      <Partners />
-      <KnowledgeCenter />
-      <MediaCenter />
-      <Careers />
-      <Newsletter />
-      <MembersRegistration />
-      <Footer />
-    </>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/services" element={<ServicesPage />} />
+        <Route path="/knowledge" element={<KnowledgePage />} />
+        <Route path="/careers" element={<CareersPage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        <Route path="*" element={<HomePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

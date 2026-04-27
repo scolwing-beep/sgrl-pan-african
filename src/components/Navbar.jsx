@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { FaChevronDown, FaBars, FaTimes } from 'react-icons/fa'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { FaChevronDown, FaBars, FaXmark } from 'react-icons/fa6'
 import logo from '../assets/images/sgrl-logo.png'
 import './Navbar.css'
 
@@ -7,39 +8,41 @@ const menuItems = [
   {
     label: 'Who We Are',
     submenu: [
-      { label: 'About SGRL', target: 'about-sgrl' },
-      { label: 'Our Team', target: 'our-team' },
-      { label: 'Our History', target: 'our-history' },
-      { label: 'Partners', target: 'partners' },
+      { label: 'About SGRL', page: '/about' },
+      { label: 'Our Team', page: '/about' },
+      { label: 'Our History', page: '/about' },
+      { label: 'Partners', page: '/' },
     ],
   },
   {
     label: 'What We Do',
+    page: '/services',
     submenu: [
-      { label: 'Trade Facilitation', target: 'services' },
-      { label: 'Commodity Supply', target: 'commodity-supply' },
-      { label: 'Market Access', target: 'market-access' },
-      { label: 'Advisory Services', target: 'services' },
+      { label: 'Trade Facilitation', page: '/services' },
+      { label: 'Commodity Supply', page: '/services' },
+      { label: 'Market Access', page: '/services' },
+      { label: 'Advisory Services', page: '/services' },
     ],
   },
   {
     label: 'Knowledge Center',
+    page: '/knowledge',
     submenu: [
-      { label: 'Research', target: 'research' },
-      { label: 'Publications', target: 'publications' },
-      { label: 'Market Reports', target: 'market-reports' },
+      { label: 'Research', page: '/knowledge' },
+      { label: 'Publications', page: '/knowledge' },
+      { label: 'Market Reports', page: '/knowledge' },
+      { label: 'Latest News', page: '/knowledge' },
     ],
   },
   {
     label: 'Media Center',
+    page: '/knowledge',
     submenu: [
-      { label: 'News', target: 'news' },
-      { label: 'Press Releases', target: 'news' },
-      { label: 'Gallery', target: 'gallery' },
+      { label: 'News & Updates', page: '/knowledge' },
+      { label: 'Press Releases', page: '/knowledge' },
     ],
   },
-  { label: 'Careers', target: 'careers' },
-  { label: 'Members Only', target: 'members-only' },
+  { label: 'Careers', page: '/careers' },
 ]
 
 function Navbar() {
@@ -48,6 +51,8 @@ function Navbar() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 980)
   const [scrolled, setScrolled] = useState(false)
   const navRef = useRef(null)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 980px)')
@@ -79,28 +84,31 @@ function Navbar() {
     }
   }, [])
 
-  const scrollTo = useCallback((targetId) => {
-    const el = document.getElementById(targetId)
-    if (el) {
-      const top = el.getBoundingClientRect().top + window.pageYOffset - 80
-      window.scrollTo({ top, behavior: 'smooth' })
-    }
-    setMobileOpen(false); setActiveDropdown(null)
-  }, [])
+  useEffect(() => {
+    setMobileOpen(false)
+    setActiveDropdown(null)
+  }, [location.pathname])
+
+  const goTo = useCallback((page) => {
+    navigate(page)
+    setMobileOpen(false)
+    setActiveDropdown(null)
+  }, [navigate])
 
   const handleParentClick = (e, item, index) => {
     e.preventDefault()
     if (item.submenu) {
       if (isMobile) setActiveDropdown(activeDropdown === index ? null : index)
-    } else if (item.target) {
-      scrollTo(item.target)
+      else if (item.page) goTo(item.page)
+    } else if (item.page) {
+      goTo(item.page)
     }
   }
 
   return (
     <nav className={`navbar${scrolled ? ' scrolled' : ''}`} ref={navRef}>
       <div className="navbar-container">
-        <a href="#" className="navbar-logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }) }}>
+        <a href="/" className="navbar-logo" onClick={(e) => { e.preventDefault(); goTo('/') }}>
           <img src={logo} alt="SGRL – Scolwing Global Resources Limited" />
         </a>
 
@@ -110,12 +118,13 @@ function Navbar() {
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
         >
-          {mobileOpen ? <FaTimes /> : <FaBars />}
+          {mobileOpen ? <FaXmark /> : <FaBars />}
         </button>
 
         <ul className={`navbar-menu${mobileOpen ? ' active' : ''}`}>
           {menuItems.map((item, index) => {
             const isOpen = activeDropdown === index
+            const isActive = item.page === location.pathname || item.submenu?.some(s => s.page === location.pathname)
             return (
               <li
                 key={index}
@@ -123,7 +132,11 @@ function Navbar() {
                 onMouseEnter={() => { if (!isMobile && item.submenu) setActiveDropdown(index) }}
                 onMouseLeave={() => { if (!isMobile && item.submenu) setActiveDropdown(null) }}
               >
-                <a href="#" className={`navbar-link${isOpen ? ' open' : ''}`} onClick={(e) => handleParentClick(e, item, index)}>
+                <a
+                  href={item.page || '#'}
+                  className={`navbar-link${isOpen ? ' open' : ''}${isActive ? ' active-page' : ''}`}
+                  onClick={(e) => handleParentClick(e, item, index)}
+                >
                   {item.label}
                   {item.submenu && <FaChevronDown className={`dropdown-arrow${isOpen ? ' rotated' : ''}`} />}
                 </a>
@@ -131,7 +144,7 @@ function Navbar() {
                   <ul className={`dropdown-menu${isOpen ? ' show' : ''}`}>
                     {item.submenu.map((sub, si) => (
                       <li key={si}>
-                        <a href="#" onClick={(e) => { e.preventDefault(); scrollTo(sub.target) }}>{sub.label}</a>
+                        <a href={sub.page} onClick={(e) => { e.preventDefault(); goTo(sub.page) }}>{sub.label}</a>
                       </li>
                     ))}
                   </ul>
@@ -140,8 +153,8 @@ function Navbar() {
             )
           })}
           <li className="navbar-item navbar-cta">
-            <a href="#" className="navbar-cta-btn" onClick={(e) => { e.preventDefault(); scrollTo('members-only') }}>
-              Member Login
+            <a href="/contact" className="navbar-cta-btn" onClick={(e) => { e.preventDefault(); goTo('/contact') }}>
+              Contact Us
             </a>
           </li>
         </ul>

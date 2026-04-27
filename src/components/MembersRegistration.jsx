@@ -1,385 +1,241 @@
-import { useState } from 'react'
-import {
-  FaUser, FaEnvelope, FaLock, FaPhone, FaBuilding, FaGlobe,
-  FaEye, FaEyeSlash, FaCircleCheck, FaXTwitter, FaArrowRightToBracket,
-  FaUserPlus, FaShield, FaFileContract, FaChartBar,
-} from 'react-icons/fa6'
-import { FaWhatsapp, FaShareAlt } from 'react-icons/fa'
+import { useState, useRef } from 'react'
+import { FaArrowRight, FaEnvelope, FaLocationDot, FaGlobe, FaLinkedinIn, FaPhone } from 'react-icons/fa6'
 import { useInView } from '../hooks/useInView'
 import './MembersRegistration.css'
 
-const AFRICAN_COUNTRIES = [
-  'Nigeria', 'Ghana', 'Kenya', 'Rwanda', 'Zambia', 'South Africa',
-  'Senegal', 'Cameroon', 'Ethiopia', 'Tanzania', 'Uganda', 'Côte d\'Ivoire',
-  'Egypt', 'Morocco', 'Other African Country',
-]
-const OTHER_COUNTRIES = ['United Kingdom', 'Germany', 'France', 'Netherlands', 'USA', 'China', 'India', 'Other International']
-
-const MEMBER_TYPES = [
-  { value: 'supplier', label: 'Commodity Supplier', desc: 'I supply agricultural/natural resource commodities' },
-  { value: 'buyer', label: 'International Buyer', desc: 'I source and purchase commodities internationally' },
-  { value: 'partner', label: 'Trade Partner / Agent', desc: 'I facilitate trade between suppliers and buyers' },
-  { value: 'logistics', label: 'Logistics / Freight Provider', desc: 'I provide shipping, freight, or logistics services' },
-  { value: 'analyst', label: 'Researcher / Analyst', desc: 'I conduct research or advisory in agribusiness' },
+const SUPPLIER_BENEFITS = [
+  'Direct introductions to verified buyers across Kenya, South Africa, Rwanda, Ghana, and EU markets',
+  'SGRL facilitates every introduction — you never spend time finding or vetting buyers yourself',
+  'Your company profile and commodity specifications promoted to SGRL\'s entire verified buyer network',
+  'Access to weekly commodity price intelligence across all 10 SGRL commodity lines',
+  'Deal support — SGRL advises on Incoterms, documentation, and payment structure for every deal',
+  'Featured in SGRL\'s Supplier Spotlight — monthly feature reaching 5,000+ LinkedIn followers',
 ]
 
-const BENEFITS = [
-  { icon: <FaFileContract />, title: 'Verified Contracts', desc: 'Access standardised trade contracts and documentation templates.' },
-  { icon: <FaChartBar />, title: 'Market Intelligence', desc: 'Exclusive commodity price reports and trade corridor data.' },
-  { icon: <FaShield />, title: 'Verified Network', desc: 'Connect with screened suppliers and buyers across 7 African nations.' },
-  { icon: <FaGlobe />, title: 'AfCFTA Advisory', desc: 'Guidance on intra-African trade routes and preferential tariff schedules.' },
+const BUYER_BENEFITS = [
+  'Access to SGRL\'s complete verified supplier network across Nigeria, Ghana, Zambia, Senegal, and all 7 markets — at zero cost',
+  'Tailored supplier matching based on your commodity, volume, quality grade, and delivery timeline requirements',
+  'SGRL facilitates every Zoom introduction — you meet only verified, document-ready suppliers',
+  'Weekly commodity availability and pricing intelligence — know what\'s available before you ask',
+  'Deal documentation support — SGRL guides you through Proforma Invoice, Supply Contract, and payment terms',
+  'Non-circumvention protection — SGRL\'s legal framework protects you from supplier bypass and fraud',
 ]
 
-function RegisterForm({ onSuccess }) {
+const CONTACT_ITEMS = [
+  { label: 'PRIMARY EMAIL', value: 'info@scolwingglobal.com', sub: 'Enquiries — responses within 24 hours', href: 'mailto:info@scolwingglobal.com', Icon: FaEnvelope, color: '#f5f0e0' },
+  { label: 'PHONE / WHATSAPP', value: '+234 7076 178 711', sub: 'Available Mon–Fri, 9am–6pm WAT', href: 'tel:+2347076178711', Icon: FaPhone, color: '#e8fdf0' },
+  { label: 'WEBSITE', value: 'scolwingglobal.com', sub: 'Pan-African Agribusiness Trade Facilitation', href: '#', Icon: FaGlobe, color: '#f5f0e0' },
+  { label: 'REGISTERED OFFICE', value: 'Lagos, Nigeria', sub: 'RC 1743970 · TIN: 23779921-0001 · Incorporated Dec 2020', href: null, Icon: FaLocationDot, color: '#fdecea' },
+  { label: 'EAST AFRICA HUB', value: 'Kigali, Rwanda', sub: 'East & Southern Africa operations', href: null, Icon: FaGlobe, color: '#e8f0fe' },
+  { label: 'LINKEDIN', value: 'linkedin.com/company/scolwingglobal', sub: 'Weekly commodity intelligence · Deal alerts · Market news', href: 'https://linkedin.com/company/scolwingglobal', Icon: FaLinkedinIn, color: '#e8eaf6' },
+]
+
+const ROLES = ['Commodity Supplier', 'International Buyer', 'Trade Partner / Agent', 'Logistics Provider', 'Researcher / Analyst', 'Media / Press', 'Other']
+const COMMODITIES = ['Cashew Nuts', 'Sesame Seeds', 'Soybean', 'Maize / Corn', 'Cassava', 'Ginger', 'Cocoa', 'Palm Oil', 'Groundnuts', 'Cotton', 'Other / Multiple']
+const ALL_COUNTRIES = [
+  'Nigeria', 'Ghana', 'Kenya', 'Rwanda', 'Zambia', 'South Africa', 'Senegal', 'Cameroon',
+  'Ethiopia', 'Tanzania', 'Uganda', "Côte d'Ivoire", 'Egypt', 'Morocco',
+  'United Kingdom', 'Germany', 'France', 'Netherlands', 'Belgium', 'USA', 'Canada',
+  'China', 'India', 'UAE', 'Saudi Arabia', 'Singapore', 'Other',
+]
+
+function ContactForm({ defaultRole }) {
   const [form, setForm] = useState({
-    firstName: '', lastName: '', email: '', phone: '',
-    company: '', memberType: '', country: '', password: '', confirmPassword: '',
-    agreeTerms: false, agreeNewsletter: false,
+    firstName: '', lastName: '', company: '', email: '',
+    country: '', role: defaultRole || '', commodity: '', message: '',
   })
   const [errors, setErrors] = useState({})
-  const [showPass, setShowPass] = useState(false)
-  const [showConfirm, setShowConfirm] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [sent, setSent] = useState(false)
 
   const validate = () => {
     const e = {}
-    if (!form.firstName.trim()) e.firstName = 'First name is required.'
-    if (!form.lastName.trim()) e.lastName = 'Last name is required.'
-    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Enter a valid email address.'
-    if (!form.phone.trim()) e.phone = 'Phone number is required.'
-    if (!form.memberType) e.memberType = 'Please select your member type.'
-    if (!form.country) e.country = 'Please select your country.'
-    if (form.password.length < 8) e.password = 'Password must be at least 8 characters.'
-    if (form.password !== form.confirmPassword) e.confirmPassword = 'Passwords do not match.'
-    if (!form.agreeTerms) e.agreeTerms = 'You must accept the Terms & Conditions.'
+    if (!form.firstName.trim()) e.firstName = 'Required'
+    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) e.email = 'Valid email required'
+    if (!form.message.trim()) e.message = 'Please enter a message'
     return e
   }
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }))
+    const { name, value } = e.target
+    setForm(prev => ({ ...prev, [name]: value }))
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }))
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const errs = validate()
     if (Object.keys(errs).length) { setErrors(errs); return }
-    setLoading(true)
-    setTimeout(() => { setLoading(false); onSuccess(form.email, form.firstName) }, 1400)
+    const subject = `SGRL Enquiry — ${form.role || 'General'} | ${form.firstName} ${form.lastName}`
+    const body = `Name: ${form.firstName} ${form.lastName}\nCompany: ${form.company}\nEmail: ${form.email}\nCountry: ${form.country}\nRole: ${form.role}\nCommodity of Interest: ${form.commodity}\n\nMessage:\n${form.message}`
+    window.location.href = `mailto:info@scolwingglobal.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
+    setSent(true)
   }
 
-  const strengthLevel = (pwd) => {
-    if (!pwd) return 0
-    let s = 0
-    if (pwd.length >= 8) s++
-    if (/[A-Z]/.test(pwd)) s++
-    if (/[0-9]/.test(pwd)) s++
-    if (/[^A-Za-z0-9]/.test(pwd)) s++
-    return s
-  }
-  const strength = strengthLevel(form.password)
-  const strengthLabel = ['', 'Weak', 'Fair', 'Good', 'Strong'][strength]
-  const strengthClass = ['', 'weak', 'fair', 'good', 'strong'][strength]
-
-  return (
-    <form className="mem-form" onSubmit={handleSubmit} noValidate>
-      <div className="mem-form-row">
-        <div className="mem-field">
-          <label>First Name <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.firstName ? 'error' : ''}`}>
-            <FaUser className="mem-field-icon" />
-            <input type="text" name="firstName" placeholder="First name" value={form.firstName} onChange={handleChange} />
-          </div>
-          {errors.firstName && <span className="mem-error">{errors.firstName}</span>}
-        </div>
-        <div className="mem-field">
-          <label>Last Name <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.lastName ? 'error' : ''}`}>
-            <FaUser className="mem-field-icon" />
-            <input type="text" name="lastName" placeholder="Last name" value={form.lastName} onChange={handleChange} />
-          </div>
-          {errors.lastName && <span className="mem-error">{errors.lastName}</span>}
-        </div>
-      </div>
-
-      <div className="mem-form-row">
-        <div className="mem-field">
-          <label>Email Address <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.email ? 'error' : ''}`}>
-            <FaEnvelope className="mem-field-icon" />
-            <input type="email" name="email" placeholder="you@example.com" value={form.email} onChange={handleChange} />
-          </div>
-          {errors.email && <span className="mem-error">{errors.email}</span>}
-        </div>
-        <div className="mem-field">
-          <label>Phone Number <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.phone ? 'error' : ''}`}>
-            <FaPhone className="mem-field-icon" />
-            <input type="tel" name="phone" placeholder="+234 800 000 0000" value={form.phone} onChange={handleChange} />
-          </div>
-          {errors.phone && <span className="mem-error">{errors.phone}</span>}
-        </div>
-      </div>
-
-      <div className="mem-form-row">
-        <div className="mem-field">
-          <label>Company / Organisation</label>
-          <div className="mem-input-wrap">
-            <FaBuilding className="mem-field-icon" />
-            <input type="text" name="company" placeholder="Your company name (optional)" value={form.company} onChange={handleChange} />
-          </div>
-        </div>
-        <div className="mem-field">
-          <label>Country <span className="req">*</span></label>
-          <select name="country" value={form.country} onChange={handleChange} className={errors.country ? 'error' : ''}>
-            <option value="">Select your country</option>
-            <optgroup label="Africa">
-              {AFRICAN_COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </optgroup>
-            <optgroup label="International">
-              {OTHER_COUNTRIES.map((c) => <option key={c} value={c}>{c}</option>)}
-            </optgroup>
-          </select>
-          {errors.country && <span className="mem-error">{errors.country}</span>}
-        </div>
-      </div>
-
-      <div className="mem-field">
-        <label>Member Type <span className="req">*</span></label>
-        <div className={`mem-type-grid ${errors.memberType ? 'error-border' : ''}`}>
-          {MEMBER_TYPES.map((t) => (
-            <label key={t.value} className={`mem-type-card ${form.memberType === t.value ? 'selected' : ''}`}>
-              <input type="radio" name="memberType" value={t.value} checked={form.memberType === t.value} onChange={handleChange} />
-              <span className="mem-type-label">{t.label}</span>
-              <span className="mem-type-desc">{t.desc}</span>
-            </label>
-          ))}
-        </div>
-        {errors.memberType && <span className="mem-error">{errors.memberType}</span>}
-      </div>
-
-      <div className="mem-form-row">
-        <div className="mem-field">
-          <label>Password <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.password ? 'error' : ''}`}>
-            <FaLock className="mem-field-icon" />
-            <input type={showPass ? 'text' : 'password'} name="password" placeholder="Min. 8 characters" value={form.password} onChange={handleChange} />
-            <button type="button" className="mem-eye" onClick={() => setShowPass(!showPass)} aria-label="Toggle password">
-              {showPass ? <FaEyeSlash /> : <FaEye />}
-            </button>
-          </div>
-          {form.password && (
-            <div className="mem-strength">
-              <div className={`mem-strength-bar ${strengthClass}`}>
-                {[1, 2, 3, 4].map((n) => <span key={n} className={strength >= n ? 'filled' : ''} />)}
-              </div>
-              <span className={`mem-strength-label ${strengthClass}`}>{strengthLabel}</span>
-            </div>
-          )}
-          {errors.password && <span className="mem-error">{errors.password}</span>}
-        </div>
-        <div className="mem-field">
-          <label>Confirm Password <span className="req">*</span></label>
-          <div className={`mem-input-wrap ${errors.confirmPassword ? 'error' : ''}`}>
-            <FaLock className="mem-field-icon" />
-            <input type={showConfirm ? 'text' : 'password'} name="confirmPassword" placeholder="Repeat password" value={form.confirmPassword} onChange={handleChange} />
-            <button type="button" className="mem-eye" onClick={() => setShowConfirm(!showConfirm)} aria-label="Toggle confirm password">
-              {showConfirm ? <FaEyeSlash /> : <FaEye />}
-            </button>
-          </div>
-          {errors.confirmPassword && <span className="mem-error">{errors.confirmPassword}</span>}
-        </div>
-      </div>
-
-      <div className="mem-checks">
-        <label className={`mem-check-label ${errors.agreeTerms ? 'check-error' : ''}`}>
-          <input type="checkbox" name="agreeTerms" checked={form.agreeTerms} onChange={handleChange} />
-          <span>I agree to the <a href="#" onClick={(e) => e.preventDefault()}>Terms &amp; Conditions</a> and <a href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a> <span className="req">*</span></span>
-        </label>
-        {errors.agreeTerms && <span className="mem-error">{errors.agreeTerms}</span>}
-
-        <label className="mem-check-label">
-          <input type="checkbox" name="agreeNewsletter" checked={form.agreeNewsletter} onChange={handleChange} />
-          <span>Send me commodity market updates and SGRL newsletter</span>
-        </label>
-      </div>
-
-      <button type="submit" className="mem-submit-btn" disabled={loading}>
-        {loading ? <span className="mem-spinner" /> : <><FaUserPlus /> Create Account</>}
-      </button>
-    </form>
-  )
-}
-
-function LoginForm({ onSwitchToRegister }) {
-  const [form, setForm] = useState({ email: '', password: '', remember: false })
-  const [errors, setErrors] = useState({})
-  const [showPass, setShowPass] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [forgotSent, setForgotSent] = useState(false)
-
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target
-    setForm((prev) => ({ ...prev, [name]: type === 'checkbox' ? checked : value }))
-    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const errs = {}
-    if (!form.email.trim() || !/\S+@\S+\.\S+/.test(form.email)) errs.email = 'Enter a valid email address.'
-    if (!form.password) errs.password = 'Password is required.'
-    if (Object.keys(errs).length) { setErrors(errs); return }
-    setLoading(true)
-    setTimeout(() => { setLoading(false); setLoggedIn(true) }, 1400)
-  }
-
-  const handleForgot = (e) => {
-    e.preventDefault()
-    if (!form.email.trim()) { setErrors({ email: 'Enter your email to reset your password.' }); return }
-    setForgotSent(true)
-  }
-
-  if (loggedIn) {
+  if (sent) {
     return (
-      <div className="mem-logged-in">
-        <FaCircleCheck className="mem-login-check" />
-        <h3>Welcome Back!</h3>
-        <p>You are signed in as <strong>{form.email}</strong>.</p>
-        <div className="mem-dashboard-links">
-          <a href="#" onClick={(e) => e.preventDefault()} className="mem-dash-link"><FaChartBar /> Market Reports</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="mem-dash-link"><FaFileContract /> My Contracts</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="mem-dash-link"><FaGlobe /> Supplier Network</a>
-          <a href="#" onClick={(e) => e.preventDefault()} className="mem-dash-link"><FaShield /> AfCFTA Advisory</a>
-        </div>
-        <p className="mem-portal-note">Full member portal is currently in development. Contact <a href="mailto:info@scolwingglobal.com">info@scolwingglobal.com</a> for direct access.</p>
-        <button className="mem-submit-btn" style={{ marginTop: '20px' }} onClick={() => setLoggedIn(false)}>Sign Out</button>
+      <div className="cf-success">
+        <div className="cf-success-check">✓</div>
+        <h4>Message Prepared</h4>
+        <p>Your email client has opened with the message ready to send. We respond to all enquiries within 24 hours.</p>
+        <button className="cf-success-reset" onClick={() => setSent(false)}>Send Another Message</button>
       </div>
     )
   }
 
   return (
-    <form className="mem-form" onSubmit={handleSubmit} noValidate>
-      <div className="mem-field">
-        <label>Email Address <span className="req">*</span></label>
-        <div className={`mem-input-wrap ${errors.email ? 'error' : ''}`}>
-          <FaEnvelope className="mem-field-icon" />
-          <input type="email" name="email" placeholder="you@example.com" value={form.email} onChange={handleChange} />
+    <form className="cf-form" onSubmit={handleSubmit} noValidate>
+      <div className="cf-row">
+        <div className={`cf-field${errors.firstName ? ' cf-has-error' : ''}`}>
+          <label>First Name</label>
+          <input type="text" name="firstName" placeholder="Your first name" value={form.firstName} onChange={handleChange} />
+          {errors.firstName && <span className="cf-error">{errors.firstName}</span>}
         </div>
-        {errors.email && <span className="mem-error">{errors.email}</span>}
-      </div>
-
-      <div className="mem-field">
-        <label>Password <span className="req">*</span></label>
-        <div className={`mem-input-wrap ${errors.password ? 'error' : ''}`}>
-          <FaLock className="mem-field-icon" />
-          <input type={showPass ? 'text' : 'password'} name="password" placeholder="Your password" value={form.password} onChange={handleChange} />
-          <button type="button" className="mem-eye" onClick={() => setShowPass(!showPass)} aria-label="Toggle password">
-            {showPass ? <FaEyeSlash /> : <FaEye />}
-          </button>
+        <div className="cf-field">
+          <label>Last Name</label>
+          <input type="text" name="lastName" placeholder="Your last name" value={form.lastName} onChange={handleChange} />
         </div>
-        {errors.password && <span className="mem-error">{errors.password}</span>}
       </div>
-
-      <div className="mem-login-row">
-        <label className="mem-check-label">
-          <input type="checkbox" name="remember" checked={form.remember} onChange={handleChange} />
-          <span>Remember me</span>
-        </label>
-        <button type="button" className="mem-forgot" onClick={handleForgot}>Forgot password?</button>
+      <div className="cf-field">
+        <label>Company Name</label>
+        <input type="text" name="company" placeholder="Your registered company name" value={form.company} onChange={handleChange} />
       </div>
-
-      {forgotSent && (
-        <div className="mem-forgot-sent">
-          <FaCircleCheck /> Password reset link sent to <strong>{form.email}</strong>
+      <div className="cf-row">
+        <div className={`cf-field${errors.email ? ' cf-has-error' : ''}`}>
+          <label>Email Address</label>
+          <input type="email" name="email" placeholder="your@company.com" value={form.email} onChange={handleChange} />
+          {errors.email && <span className="cf-error">{errors.email}</span>}
         </div>
-      )}
-
-      <button type="submit" className="mem-submit-btn" disabled={loading}>
-        {loading ? <span className="mem-spinner" /> : <><FaArrowRightToBracket /> Sign In</>}
-      </button>
-
-      <p className="mem-switch-text">
-        Not a member yet?{' '}
-        <button type="button" className="mem-switch-link" onClick={onSwitchToRegister}>Create a free account</button>
-      </p>
+        <div className="cf-field">
+          <label>Country</label>
+          <select name="country" value={form.country} onChange={handleChange}>
+            <option value="">Select your country</option>
+            {ALL_COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </div>
+      </div>
+      <div className="cf-field">
+        <label>I am enquiring as a...</label>
+        <select name="role" value={form.role} onChange={handleChange}>
+          <option value="">Select your role</option>
+          {ROLES.map(r => <option key={r} value={r}>{r}</option>)}
+        </select>
+      </div>
+      <div className="cf-field">
+        <label>Commodity of Interest</label>
+        <select name="commodity" value={form.commodity} onChange={handleChange}>
+          <option value="">Select commodity</option>
+          {COMMODITIES.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+      <div className={`cf-field${errors.message ? ' cf-has-error' : ''}`}>
+        <label>Your Message</label>
+        <textarea name="message" rows={5} placeholder="Tell us about your business, the commodity volumes you work with, your current markets, and what you're looking for from SGRL..." value={form.message} onChange={handleChange} />
+        {errors.message && <span className="cf-error">{errors.message}</span>}
+      </div>
+      <button type="submit" className="cf-submit">Send Message to SGRL <FaArrowRight /></button>
+      <p className="cf-note">We respond to all enquiries within 24 hours. Your information is never shared with third parties.</p>
     </form>
   )
 }
 
 function MembersRegistration() {
-  const [tab, setTab] = useState('register')
-  const [regSuccess, setRegSuccess] = useState(null)
   const [ref, isInView] = useInView()
+  const contactRef = useRef(null)
+  const [applyRole, setApplyRole] = useState('')
 
-  const handleRegSuccess = (email, firstName) => {
-    setRegSuccess({ email, firstName })
+  const handleApply = (role) => {
+    setApplyRole(role)
+    setTimeout(() => {
+      if (contactRef.current) {
+        const top = contactRef.current.getBoundingClientRect().top + window.pageYOffset - 90
+        window.scrollTo({ top, behavior: 'smooth' })
+      }
+    }, 50)
   }
 
   return (
-    <section className="members" id="members-only">
-      <div className="members-container" ref={ref}>
+    <section className="members-section" id="members-only" ref={ref}>
 
-        {/* Benefits strip */}
-        <div className={`mem-benefits anim-fade-up${isInView ? ' in-view' : ''}`}>
-          {BENEFITS.map((b, i) => (
-            <div key={i} className="mem-benefit">
-              <span className="mem-benefit-icon">{b.icon}</span>
-              <div>
-                <strong>{b.title}</strong>
-                <p>{b.desc}</p>
-              </div>
+      {/* Membership Options */}
+      <div className={`membership-options anim-fade-up${isInView ? ' in-view' : ''}`}>
+        <div className="mem-section-label">MEMBERSHIP OPTIONS</div>
+        <h2 className="mem-section-title">Supplier or Buyer — One Network. Two Paths.</h2>
+
+        <div className="membership-cards">
+          {/* Supplier Card */}
+          <div className="mem-card">
+            <div className="mem-card-icon">🌾</div>
+            <h3 className="mem-card-title">Agri-Supplier Membership</h3>
+            <div className="mem-card-subtitle">FOR EXPORTERS, PROCESSORS &amp; AGGREGATORS</div>
+            <ul className="mem-card-benefits">
+              {SUPPLIER_BENEFITS.map((b, i) => (
+                <li key={i}><span className="mem-bullet">✦</span><span>{b}</span></li>
+              ))}
+            </ul>
+            <div className="mem-card-pricing">
+              <span className="pricing-main">2—4%</span>
+              <span className="pricing-sub"> of deal value on completion · No upfront joining fee</span>
             </div>
-          ))}
-        </div>
+            <button className="mem-apply-btn navy" onClick={() => handleApply('Commodity Supplier')}>
+              Apply as Supplier <FaArrowRight />
+            </button>
+          </div>
 
-        <h2 className={`members-page-title anim-slide-right${isInView ? ' in-view' : ''}`}>
-          SGRL Members Portal
-        </h2>
-        <div className="members-divider"></div>
-
-        <div className={`members-form-wrapper anim-fade-up${isInView ? ' in-view' : ''} delay-1`}>
-
-          {regSuccess ? (
-            <div className="mem-success-state">
-              <FaCircleCheck className="mem-success-icon" />
-              <h3>Welcome to SGRL, {regSuccess.firstName}!</h3>
-              <p>Your account has been created. A verification email has been sent to <strong>{regSuccess.email}</strong>. Click the link in that email to activate your account and access the Members Portal.</p>
-              <p className="mem-success-note">Didn't receive it? Check your spam folder or contact <a href="mailto:info@scolwingglobal.com">info@scolwingglobal.com</a></p>
-              <button className="mem-submit-btn" style={{ marginTop: '24px', maxWidth: '260px', margin: '24px auto 0' }} onClick={() => { setRegSuccess(null); setTab('login') }}>
-                <FaArrowRightToBracket /> Go to Login
-              </button>
+          {/* Buyer Card */}
+          <div className="mem-card featured">
+            <div className="mem-card-badge">FREE TO JOIN</div>
+            <div className="mem-card-icon">🛒</div>
+            <h3 className="mem-card-title">Agri-Buyer Membership</h3>
+            <div className="mem-card-subtitle">FOR IMPORTERS, PROCESSORS &amp; DISTRIBUTORS</div>
+            <ul className="mem-card-benefits">
+              {BUYER_BENEFITS.map((b, i) => (
+                <li key={i}><span className="mem-bullet">✦</span><span>{b}</span></li>
+              ))}
+            </ul>
+            <div className="mem-card-pricing">
+              <span className="pricing-main free">Free</span>
+              <span className="pricing-sub"> to join · SGRL never invoices buyers</span>
             </div>
-          ) : (
-            <>
-              <div className="mem-tabs">
-                <button className={`mem-tab ${tab === 'register' ? 'active' : ''}`} onClick={() => setTab('register')}>
-                  <FaUserPlus /> Register
-                </button>
-                <button className={`mem-tab ${tab === 'login' ? 'active' : ''}`} onClick={() => setTab('login')}>
-                  <FaArrowRightToBracket /> Login
-                </button>
-              </div>
-
-              <div className="mem-tab-body">
-                {tab === 'register'
-                  ? <RegisterForm onSuccess={handleRegSuccess} />
-                  : <LoginForm onSwitchToRegister={() => setTab('register')} />
-                }
-              </div>
-            </>
-          )}
-        </div>
-
-        <div className="members-share">
-          <FaShareAlt className="share-icon" />
-          <span className="share-label">Share:</span>
-          <a href="#" className="share-btn" aria-label="Share on X"><FaXTwitter /></a>
-          <a href="https://wa.me/2347076178711" target="_blank" rel="noopener noreferrer" className="share-btn" aria-label="Share on WhatsApp"><FaWhatsapp /></a>
+            <button className="mem-apply-btn gold" onClick={() => handleApply('International Buyer')}>
+              Apply as Buyer <FaArrowRight />
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Contact Section */}
+      <div className={`contact-section anim-fade-up${isInView ? ' in-view' : ''} delay-1`} ref={contactRef}>
+        <div className="contact-container">
+          <div className="contact-info">
+            <div className="mem-section-label">CONTACT INFORMATION</div>
+            <h2 className="contact-title">Reach SGRL Directly</h2>
+            <div className="contact-items">
+              {CONTACT_ITEMS.map((item, i) => (
+                <div key={i} className="contact-item">
+                  <div className="contact-item-icon" style={{ background: item.color }}>
+                    <item.Icon />
+                  </div>
+                  <div className="contact-item-body">
+                    <div className="contact-item-label">{item.label}</div>
+                    {item.href
+                      ? <a className="contact-item-value" href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer">{item.value}</a>
+                      : <div className="contact-item-value">{item.value}</div>
+                    }
+                    <div className="contact-item-sub">{item.sub}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="contact-form-card">
+            <h3 className="cf-card-title">Send Us a Message</h3>
+            <p className="cf-card-sub">Tell us who you are and what you're looking for. Our team reviews every enquiry personally.</p>
+            <ContactForm defaultRole={applyRole} key={applyRole} />
+          </div>
+        </div>
+      </div>
+
     </section>
   )
 }

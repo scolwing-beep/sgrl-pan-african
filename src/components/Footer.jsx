@@ -1,21 +1,6 @@
+import { Link } from 'react-router-dom'
 import { FaFacebookF, FaXTwitter, FaInstagram, FaLinkedinIn, FaLocationDot, FaPhone, FaEnvelope, FaArrowRight } from 'react-icons/fa6'
 import './Footer.css'
-
-function scrollTo(targetId) {
-  const el = document.getElementById(targetId)
-  if (el) {
-    const top = el.getBoundingClientRect().top + window.pageYOffset - 80
-    window.scrollTo({ top, behavior: 'smooth' })
-  }
-}
-
-function FooterLink({ to, children }) {
-  return (
-    <a href="#" onClick={(e) => { e.preventDefault(); scrollTo(to) }}>
-      {children}
-    </a>
-  )
-}
 
 function Footer() {
   return (
@@ -29,11 +14,11 @@ function Footer() {
             <p>Join SGRL's verified network of suppliers, buyers, and trade partners across 7 African nations.</p>
           </div>
           <div className="footer-cta-actions">
-            <button className="footer-cta-btn primary" onClick={() => scrollTo('members-only')}>
-              Become a Member <FaArrowRight />
-            </button>
+            <Link to="/contact" className="footer-cta-btn primary">
+              Get In Touch <FaArrowRight />
+            </Link>
             <a href="mailto:info@scolwingglobal.com" className="footer-cta-btn secondary">
-              <FaEnvelope /> Contact Us
+              <FaEnvelope /> Email Us
             </a>
           </div>
         </div>
@@ -53,29 +38,28 @@ function Footer() {
               <a href="#" aria-label="Facebook"><FaFacebookF /></a>
               <a href="#" aria-label="Twitter"><FaXTwitter /></a>
               <a href="#" aria-label="Instagram"><FaInstagram /></a>
-              <a href="#" aria-label="LinkedIn"><FaLinkedinIn /></a>
+              <a href="https://linkedin.com/company/scolwingglobal" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedinIn /></a>
             </div>
           </div>
 
           <div className="footer-col">
             <h3 className="footer-heading">Quick Links</h3>
             <ul>
-              <li><FooterLink to="about-sgrl">About Us</FooterLink></li>
-              <li><FooterLink to="services">Our Services</FooterLink></li>
-              <li><FooterLink to="commodity-supply">Commodity Sourcing</FooterLink></li>
-              <li><FooterLink to="market-access">Our Markets</FooterLink></li>
-              <li><FooterLink to="careers">Careers</FooterLink></li>
+              <li><Link to="/about">About Us</Link></li>
+              <li><Link to="/services">Our Services</Link></li>
+              <li><Link to="/services">Commodity Sourcing</Link></li>
+              <li><Link to="/services">Our Markets</Link></li>
+              <li><Link to="/careers">Careers</Link></li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h3 className="footer-heading">Resources</h3>
             <ul>
-              <li><FooterLink to="market-reports">Market Reports</FooterLink></li>
-              <li><FooterLink to="publications">Publications</FooterLink></li>
-              <li><FooterLink to="members-only">Member Portal</FooterLink></li>
-              <li><FooterLink to="newsletter">Newsletter</FooterLink></li>
-              <li><FooterLink to="news">Latest News</FooterLink></li>
+              <li><Link to="/knowledge">Market Reports</Link></li>
+              <li><Link to="/knowledge">Publications</Link></li>
+              <li><Link to="/contact">Member Portal</Link></li>
+              <li><Link to="/knowledge">Latest News</Link></li>
             </ul>
           </div>
 

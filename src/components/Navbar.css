@@ -25,12 +25,12 @@
 .navbar-logo { display: flex; align-items: center; }
 
 .navbar-logo img {
-  height: 70px;
+  height: 100px;
   width: auto;
   transition: height 0.3s ease;
 }
 
-.navbar.scrolled .navbar-logo img { height: 56px; }
+.navbar.scrolled .navbar-logo img { height: 72px; }
 
 /* ── Hamburger ── */
 .navbar-toggle {
@@ -71,6 +71,8 @@
 
 .navbar-link:hover,
 .navbar-link.open { color: var(--green); }
+
+.navbar-link.active-page { color: var(--green); }
 
 /* ── CTA button ── */
 .navbar-cta { margin-left: 12px; }
